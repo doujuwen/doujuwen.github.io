@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏开发 · AR · 虚拟现实 作品集</title>
+<meta name="description" content="虚拟现实技术应用专业学生作品集：Unity、Unreal Engine、AR/VR、Shader、Blender 项目展示">
+<style>
+:root{
+  --bg:#05060a;
+  --bg2:#0a0c14;
+  --panel:#0e1120;
+  --panel2:#141829;
+  --line:#232a45;
+  --cyan:#00f0ff;
+  --magenta:#ff2d78;
+  --purple:#b44bff;
+  --yellow:#ffd23f;
+  --green:#39ffa0;
+  --text:#e8eaf6;
+  --muted:#8b93b0;
+  --font:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --mono:'Cascadia Code','JetBrains Mono',Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+}
+::selection{background:var(--magenta);color:#fff}
+a{color:inherit;text-decoration:none}
+
+/* 网格背景 */
+body::before{
+  content:"";
+  position:fixed;inset:0;z-index:-2;
+  background:
+    linear-gradient(rgba(0,240,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.05) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+body::after{
+  content:"";
+  position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%,rgba(180,75,255,.15),transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 10%,rgba(0,240,255,.12),transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 100%,rgba(255,45,120,.08),transparent 60%);
+  pointer-events:none;
+}
+
+/* 背景互动粒子层 */
+#bgCanvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+/* 扫描线 */
+.scanline{
+  position:fixed;left:0;right:0;height:2px;z-index:50;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.25;pointer-events:none;
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{0%{top:-2px}100%{top:100%}}
+
+/* 导航 */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;
+  background:rgba(5,6,10,.75);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.logo{
+  font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:1px;
+  color:var(--cyan);text-shadow:0 0 12px rgba(0,240,255,.6);
+}
+.logo b{color:var(--magenta)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{
+  font-size:14px;color:var(--muted);position:relative;transition:.2s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan)}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;
+  background:var(--cyan);transition:.25s;box-shadow:0 0 8px var(--cyan);
+}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-toggle{display:none;font-size:24px;color:var(--cyan);cursor:pointer;background:none;border:none}
+
+/* Hero */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px 24px 60px;position:relative;
+}
+.hero-tag{
+  font-family:var(--mono);font-size:13px;letter-spacing:3px;color:var(--green);
+  border:1px solid rgba(57,255,160,.4);padding:6px 16px;border-radius:2px;
+  margin-bottom:28px;background:rgba(57,255,160,.05);
+}
+.hero h1{
+  font-size:clamp(34px,6vw,72px);font-weight:800;line-height:1.15;letter-spacing:1px;
+  margin-bottom:18px;
+}
+.gradient-text{
+  background:linear-gradient(120deg,var(--cyan),var(--purple),var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p.sub{
+  max-width:640px;color:var(--muted);font-size:17px;margin-bottom:36px;
+}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn{
+  font-family:var(--mono);font-size:14px;padding:13px 28px;cursor:pointer;
+  border:1px solid var(--cyan);color:var(--cyan);background:transparent;border-radius:2px;
+  position:relative;overflow:hidden;transition:.25s;letter-spacing:1px;
+}
+.btn:hover{background:rgba(0,240,255,.1);box-shadow:0 0 20px rgba(0,240,255,.4)}
+.btn.solid{background:var(--magenta);border-color:var(--magenta);color:#fff}
+.btn.solid:hover{background:#ff4d8d;box-shadow:0 0 24px rgba(255,45,120,.5)}
+.scroll-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  color:var(--muted);font-size:12px;font-family:var(--mono);letter-spacing:2px;
+  animation:bob 2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,10px)}}
+
+/* 通用 section */
+section{padding:90px 32px;max-width:1180px;margin:0 auto}
+.sec-head{margin-bottom:50px}
+.sec-head .eyebrow{
+  font-family:var(--mono);color:var(--magenta);font-size:13px;letter-spacing:3px;margin-bottom:10px;
+}
+.sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:1px}
+.sec-head .bar{
+  width:64px;height:3px;margin-top:16px;background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  box-shadow:0 0 12px var(--cyan);
+}
+
+/* 关于我 */
+.about-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:start}
+.holo-panel{
+  position:relative;border:1px solid var(--line);border-radius:6px;
+  background:var(--panel);overflow:hidden;min-height:500px;
+}
+.holo-panel .corner{z-index:8}
+.holo-bg{
+  position:absolute;inset:-4px;background-image:url('images/cyber-bg.png');
+  background-size:cover;background-position:center;opacity:.45;
+  transition:transform .4s ease;
+}
+.holo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,6,10,.5),rgba(5,6,10,.82));
+}
+.holo-scan{
+  position:absolute;left:0;right:0;height:2px;z-index:4;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.3;animation:holoScan 5s linear infinite;
+}
+@keyframes holoScan{0%{top:-2px}100%{top:100%}}
+.holo-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;z-index:5;width:78%;pointer-events:none;
+}
+.holo-center-icon{
+  font-size:34px;color:var(--cyan);margin-bottom:10px;
+  text-shadow:0 0 20px rgba(0,240,255,.7);
+  animation:holoPulse 2.5s ease-in-out infinite;
+}
+@keyframes holoPulse{0%,100%{opacity:.5}50%{opacity:1}}
+.holo-center-title{
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+  letter-spacing:3px;margin-bottom:10px;
+}
+.holo-center-desc{
+  font-size:13px;color:var(--cyan);min-height:40px;transition:.2s;
+  text-shadow:0 0 10px rgba(0,240,255,.4);line-height:1.5;
+}
+.holo-tags{position:absolute;inset:0;z-index:6}
+.holo-tag{
+  position:absolute;font-family:var(--mono);font-size:12px;
+  padding:6px 14px;border:1px solid var(--line);border-radius:20px;
+  color:var(--text);background:rgba(10,12,20,.72);cursor:pointer;
+  transition:.25s;backdrop-filter:blur(4px);white-space:nowrap;
+  animation:tagFloat 4s ease-in-out infinite;user-select:none;
+}
+.holo-tag:hover{
+  color:#05060a;border-color:var(--cyan);background:var(--cyan);
+  box-shadow:0 0 18px rgba(0,240,255,.6);transform:scale(1.15);z-index:10;
+  animation-play-state:paused;
+}
+@keyframes tagFloat{0%,100%{margin-top:0}50%{margin-top:-8px}}
+.corner{position:absolute;width:20px;height:20px;border:2px solid var(--cyan)}
+.corner.tl{top:-2px;left:-2px;border-right:none;border-bottom:none}
+.corner.tr{top:-2px;right:-2px;border-left:none;border-bottom:none}
+.corner.bl{bottom:-2px;left:-2px;border-right:none;border-top:none}
+.corner.br{bottom:-2px;right:-2px;border-left:none;border-top:none}
+.about-text h3{font-size:22px;margin-bottom:14px}
+.about-text h3 span{color:var(--cyan)}
+.about-text p{color:var(--muted);margin-bottom:16px}
+.about-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.about-tags span{
+  font-family:var(--mono);font-size:12px;padding:6px 14px;border:1px solid var(--line);
+  border-radius:2px;color:var(--text);background:var(--panel2);transition:.2s;
+}
+.about-tags span:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* 技能矩阵 */
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.skill-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:26px;
+  transition:.25s;position:relative;overflow:hidden;
+}
+.skill-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 30px rgba(0,240,255,.12)}
+.skill-card .icon{font-size:28px;margin-bottom:14px}
+.skill-card h4{font-size:17px;margin-bottom:12px}
+.skill-card .skill-bar{
+  height:6px;background:var(--bg2);border-radius:3px;margin:14px 0;overflow:hidden;
+}
+.skill-card .skill-bar i{
+  display:block;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  box-shadow:0 0 10px var(--cyan);
+}
+.skill-card ul{list-style:none}
+.skill-card li{color:var(--muted);font-size:13px;padding:4px 0;position:relative;padding-left:18px}
+.skill-card li::before{
+  content:"";position:absolute;left:0;top:12px;width:6px;height:6px;
+  background:var(--cyan);transform:rotate(45deg);
+}
+
+/* 作品展示 */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
+.filter-btn{
+  font-family:var(--mono);font-size:13px;padding:9px 18px;cursor:pointer;
+  background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:2px;transition:.2s;
+}
+.filter-btn:hover{color:var(--cyan);border-color:var(--cyan)}
+.filter-btn.active{background:var(--cyan);color:#05060a;border-color:var(--cyan);box-shadow:0 0 16px rgba(0,240,255,.4)}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:26px}
+.project-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  transition:.25s;display:flex;flex-direction:column;
+}
+.project-card:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 24px rgba(0,240,255,.15)}
+.project-media{
+  position:relative;aspect-ratio:16/9;background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.project-media video{width:100%;height:100%;object-fit:contain;background:#000}
+.project-media iframe{width:100%;height:100%;border:none;display:block}
+.project-media .placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);
+}
+.project-media .placeholder .pl-icon{font-size:40px;color:var(--cyan);opacity:.6}
+.project-media .placeholder span{font-family:var(--mono);font-size:12px;letter-spacing:2px}
+.project-media .engine-badge{
+  position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:11px;
+  padding:4px 10px;background:rgba(5,6,10,.85);border:1px solid var(--cyan);color:var(--cyan);border-radius:2px;
+}
+.project-body{padding:22px;display:flex;flex-direction:column;flex:1}
+.project-body h3{font-size:19px;margin-bottom:6px}
+.project-body .role{font-size:12px;color:var(--magenta);font-family:var(--mono);margin-bottom:12px}
+.project-body .desc{color:var(--muted);font-size:14px;margin-bottom:16px;flex:1}
+.project-body .tech{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.project-body .tech span{
+  font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:2px;
+  background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+}
+.project-links{display:flex;gap:12px}
+.project-links a{
+  font-family:var(--mono);font-size:12px;padding:8px 16px;border-radius:2px;transition:.2s;
+}
+.link-bili{background:var(--magenta);color:#fff}
+.link-bili:hover{background:#ff4d8d;box-shadow:0 0 14px rgba(255,45,120,.5)}
+.link-local{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
+.link-local:hover{background:rgba(0,240,255,.1)}
+
+/* 联系方式 */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.contact-info h3{font-size:24px;margin-bottom:16px}
+.contact-info h3 span{color:var(--magenta)}
+.contact-info p{color:var(--muted);margin-bottom:30px}
+.contact-list{list-style:none;display:flex;flex-direction:column;gap:18px}
+.contact-list li{display:flex;align-items:center;gap:16px}
+.contact-list .c-icon{
+  width:46px;height:46px;border:1px solid var(--line);border-radius:4px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--panel);
+}
+.contact-list .c-label{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:1px}
+.contact-list .c-value{font-size:15px;color:var(--text)}
+.contact-list a:hover .c-value{color:var(--cyan)}
+.contact-form{
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:30px;
+}
+.contact-form label{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+.contact-form input,.contact-form textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:4px;
+  color:var(--text);padding:12px 14px;font-family:var(--font);font-size:14px;margin-bottom:20px;transition:.2s;
+}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,.2)}
+.contact-form textarea{resize:vertical;min-height:120px}
+.contact-form .btn{width:100%}
+
+/* Footer */
+footer{
+  border-top:1px solid var(--line);padding:32px;text-align:center;
+  color:var(--muted);font-size:13px;margin-top:40px;
+}
+footer .mono{font-family:var(--mono);color:var(--cyan)}
+
+/* 视频弹窗 */
+.video-modal{
+  position:fixed;inset:0;z-index:200;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(6px);padding:20px;
+}
+.video-modal.show{display:flex}
+.video-modal-inner{
+  position:relative;width:min(960px,94vw);aspect-ratio:16/9;
+  background:#000;border:1px solid var(--cyan);border-radius:6px;
+  box-shadow:0 0 40px rgba(0,240,255,.3);
+}
+.video-modal-inner iframe{width:100%;height:100%;border:none;border-radius:6px;display:block}
+.video-modal-close{
+  position:absolute;top:-16px;right:-16px;width:36px;height:36px;border-radius:50%;
+  background:var(--magenta);color:#fff;border:none;font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:10;line-height:1;
+  box-shadow:0 0 14px rgba(255,45,120,.5);
+}
+.video-modal-close:hover{background:#ff4d8d}
+
+/* 滚动淡入动画 */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* 响应式 */
+@media(max-width:768px){
+  nav{padding:14px 20px}
+  .nav-links{
+    position:fixed;top:60px;left:0;right:0;flex-direction:column;gap:0;
+    background:rgba(5,6,10,.97);border-bottom:1px solid var(--line);padding:10px 0;
+    display:none;
+  }
+  .nav-links.open{display:flex}
+  .nav-links li{padding:14px 24px}
+  .nav-toggle{display:block}
+  .about-grid,.contact-wrap{grid-template-columns:1fr}
+  section{padding:70px 20px}
+  .projects-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<canvas id="bgCanvas"></canvas>
+
+<nav>
+  <div class="logo">doujuwen <span style="color:var(--muted);font-weight:400;font-size:13px">作品集</span></div>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+  <ul class="nav-links">
+    <li><a href="#home" class="active">首页</a></li>
+    <li><a href="#about">关于我</a></li>
+    <li><a href="#skills">技能</a></li>
+    <li><a href="#projects">作品</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<section id="home" class="hero">
+  <div class="hero-tag">VIRTUAL REALITY · GAME DEV · XR</div>
+  <h1>虚拟现实技术应用<br><span class="gradient-text">游戏开发作品集</span></h1>
+  <p class="sub">专注于 Unity / Unreal Engine 游戏开发、AR 与虚拟现实交互、手写 Shader 渲染、程序化生成与 3D 建模。从玩法设计到引擎底层，从裸手交互到光线追踪，用代码构建沉浸式世界。</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn solid">查看作品</a>
+    <a href="#about" class="btn">了解我</a>
+  </div>
+  <div class="scroll-hint">▼ SCROLL</div>
+</section>
+
+<section id="about">
+  <div class="sec-head">
+    <div class="eyebrow">ABOUT ME</div>
+    <h2>关于我</h2>
+    <div class="bar"></div>
+  </div>
+  <div class="about-grid">
+    <div class="holo-panel" id="holoPanel">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="holo-bg"></div>
+      <div class="holo-overlay"></div>
+      <div class="holo-scan"></div>
+      <div class="holo-center">
+        <div class="holo-center-icon">◈</div>
+        <div class="holo-center-title">TECH STACK</div>
+        <div class="holo-center-desc" id="holoDesc">悬停标签查看技能详情</div>
+      </div>
+      <div class="holo-tags">
+        <span class="holo-tag" style="top:6%;left:8%;animation-delay:0s" data-desc="5 个完整项目 · C# 玩法开发">Unity</span>
+        <span class="holo-tag" style="top:13%;right:8%;animation-delay:.3s" data-desc="GAS 框架 · C++ 引擎层 + Blueprint">UE5</span>
+        <span class="holo-tag" style="top:28%;left:4%;animation-delay:.6s" data-desc="PICO 4 裸手交互 · XR 交互工具包">AR/VR</span>
+        <span class="holo-tag" style="top:26%;right:5%;animation-delay:.9s" data-desc="40+ 手写 CG/HLSL 着色器">Shader</span>
+        <span class="holo-tag" style="top:46%;left:6%;animation-delay:1.2s" data-desc="Gameplay Ability System 技能框架">GAS</span>
+        <span class="holo-tag" style="top:44%;right:7%;animation-delay:1.5s" data-desc="程序化内容生成 · 样条线 / 关卡实例">PCG</span>
+        <span class="holo-tag" style="top:70%;left:12%;animation-delay:1.8s" data-desc="三维建模 · 材质 · 灯光渲染">Blender</span>
+        <span class="holo-tag" style="top:68%;right:10%;animation-delay:2.1s" data-desc="AI 辅助生成贴图 / 图标 / 概念图">AIGC</span>
+      </div>
+    </div>
+    <div class="about-text">
+      <h3>虚拟现实技术应用专业 <span>开发者</span></h3>
+      <p>我是一名虚拟现实技术应用专业的开发者，热衷于用代码创造沉浸式体验。累计了一定的项目，覆盖游戏玩法、XR 交互、实时渲染、程序化生成等方向。</p>
+      <p>擅长把复杂技术拆解为可运行的机制：从 Unity 的战斗系统，到 UE5 的 Gameplay Ability System 框架；从 CG/HLSL 着色器，到 PICO 4 裸手手势追踪。我相信扎实的底层理解 + 完整的项目落地，是开发者最硬核的竞争力。</p>
+      <div class="about-tags">
+        <span>Unity / C#</span>
+        <span>Unreal Engine 5</span>
+        <span>AR / VR / MR</span>
+        <span>Shader / CG / HLSL</span>
+        <span>GAS 框架</span>
+        <span>Blender</span>
+        <span>程序化生成</span>
+        <span>AI 生成素材</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-head">
+    <div class="eyebrow">SKILLS</div>
+    <h2>技能矩阵</h2>
+    <div class="bar"></div>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-card">
+      <div class="icon">🎮</div>
+      <h4>游戏引擎开发</h4>
+      <div class="skill-bar"><i style="width:90%"></i></div>
+      <ul>
+        <li>Unity · C#</li>
+        <li>Unreal Engine</li>
+        <li>C++ 引擎层 + Blueprint 玩法层</li>
+        <li>GAS 框架实战（ASC/GE/GC/Tag）</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <div class="icon">🖐️</div>
+      <h4>XR / AR 交互</h4>
+      <div class="skill-bar"><i style="width:80%"></i></div>
+      <ul>
+        <li>PICO 4 裸手手势追踪</li>
+        <li>XR Interaction Toolkit 2.5</li>
+        <li>手势识别 · 捏合抓取 · Poke 交互</li>
+        <li>Android 构建（minSdk 29）</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <div class="icon">✨</div>
+      <h4>渲染与 Shader</h4>
+      <div class="skill-bar"><i style="width:85%"></i></div>
+      <ul>
+        <li>40+ 手写 CG/HLSL 着色器</li>
+        <li>5 种光照模型 · 前向渲染路径</li>
+        <li>AlphaTest/Blend/Stencil/TBN</li>
+        <li>四元数 · 变换矩阵</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <div class="icon">🧠</div>
+      <h4>玩法系统设计</h4>
+      <div class="skill-bar"><i style="width:88%"></i></div>
+      <ul>
+        <li>状态机 · 协程编排 · 数值框架</li>
+        <li>行为树 + 黑板 + AIPerception</li>
+        <li>NavMesh 混合寻路</li>
+        <li>弹道解算（二分搜索+物理模拟）</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <div class="icon">🧰</div>
+      <h4>工程能力</h4>
+      <div class="skill-bar"><i style="width:82%"></i></div>
+      <ul>
+        <li>构建打包 · Shader 裁剪排障</li>
+        <li>Blender 建模渲染</li>
+        <li>跨场景数据 · 组件化解耦</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <div class="icon">🤖</div>
+      <h4>程序化 & AI 生成</h4>
+      <div class="skill-bar"><i style="width:75%"></i></div>
+      <ul>
+        <li>UE5 PCG 框架（样条线/关卡实例）</li>
+        <li>AI 辅助贴图 / 图标 / 概念图生成</li>
+        <li>提示词工程（Prompt）</li>
+        <li>程序化 + AI 混合素材方案</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-head">
+    <div class="eyebrow">PROJECTS</div>
+    <h2>作品展示</h2>
+    <div class="bar"></div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="unity">Unity</button>
+    <button class="filter-btn" data-filter="ue">Unreal</button>
+    <button class="filter-btn" data-filter="ar">AR / XR</button>
+    <button class="filter-btn" data-filter="render">渲染 / Blender</button>
+  </div>
+  <div class="projects-grid" id="projectsGrid">
+
+    <div class="project-card" data-category="ar unity">
+      <div class="project-media">
+        <span class="engine-badge">PICO 4 · Unity</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEQ6&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>黄皮耗子你咋这么能吃</h3>
+        <div class="role">团队 3 人 · 负责喂养交互与跨场景数据传输</div>
+        <p class="desc">PICO 4 彩色透视 + 裸手交互的 AR 养宠游戏，「切水果换口粮 → 亲手投喂」双场景资源循环。全程无手柄：捏合抓取 + Poke 戳击 + 手势识别。</p>
+        <div class="tech">
+          <span>PICO SDK</span><span>XR Interaction Toolkit</span><span>XR Hands</span><span>EzySlice</span><span>AR Foundation</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1wM4A6UEQ6" data-bvid="BV1wM4A6UEQ6">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="unity">
+      <div class="project-media">
+        <span class="engine-badge">Unity</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEDg&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>飞机大战 · 2D 弹幕射击</h3>
+        <div class="role">单人开发 · 约 2300 行 C#</div>
+        <p class="desc">竖版街机弹幕射击游戏，完整实现「走位 → 击杀 → 强化 → Boss 递进」核心循环。4 套 Boss 弹幕 + 自研距离判定系统 + 全程序化音频。</p>
+        <div class="tech">
+          <span>Unity 2D</span><span>协程</span><span>状态机</span><span>自定义 Shader</span><span>AudioSource 池</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1wM4A6UEDg" data-bvid="BV1wM4A6UEDg">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="unity">
+      <div class="project-media">
+        <span class="engine-badge">Unity</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6SEBM&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>Football · 双人足球对战</h3>
+        <div class="role">单人开发</div>
+        <p class="desc">2D 视角 3D 场景的双人同屏足球对战，完整「开球 → 对抗 → 进球 → 回合重置 → 结算」比赛闭环。枚举状态机 + 球权系统 + 蓄力射门。</p>
+        <div class="tech">
+          <span>CharacterController</span><span>Rigidbody</span><span>枚举状态机</span><span>SendMessage 解耦</span><span>BGM Ducking</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1wM4A6SEBM" data-bvid="BV1wM4A6SEBM">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="render unity">
+      <div class="project-media">
+        <span class="engine-badge">Unity</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1cg4A67E9y&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>图像渲染 · 光照实验</h3>
+        <div class="role">单人开发 · 40+ 手写 Shader</div>
+        <p class="desc">把手写 Shader、光照公式、渲染路径、光栅化状态与几何变换拆成 6 个可交互对比场景。5 种光照模型 + 前向渲染双 Pass + 模板缓冲遮罩。</p>
+        <div class="tech">
+          <span>CG/HLSL</span><span>顶点/片元着色器</span><span>ForwardBase/Add</span><span>AlphaTest/Blend</span><span>Stencil</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1cg4A67E9y" data-bvid="BV1cg4A67E9y">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="unity">
+      <div class="project-media">
+        <span class="engine-badge">Unity</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wg4A67EuG&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>立方之围 · 载具射击</h3>
+        <div class="role">单人开发 · 最大项目</div>
+        <p class="desc">末日城市废墟中的第三人称载具射击，步兵/坦克/无人机三形态切换。坦克抛物线弹道二分搜索解算、NavMesh 混合 AI、真布娃娃死亡。</p>
+        <div class="tech">
+          <span>HingeJoint 物理</span><span>弹道解算</span><span>NavMesh</span><span>状态机 AI</span><span>Editor 扩展</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1wg4A67EuG" data-bvid="BV1wg4A67EuG">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="ue">
+      <div class="project-media">
+        <span class="engine-badge">UE · GAS</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bv4w63Ep3&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>长夜守像 · 动作 × 塔防</h3>
+        <div class="role">团队项目 · 负责除场景外全部内容</div>
+        <p class="desc">基于 UE5 GAS 的动作塔防：玩家既是近战法师也是造塔指挥官。7 个 GA / 21 个 GE / 8 个 GC / 19 个 Tag 四层解耦，伤害对齐动画打击帧。</p>
+        <div class="tech">
+          <span>UE</span><span>GAS 框架</span><span>C++ 框架层</span><span>行为树</span><span>AIPerception</span><span>Lumen</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1Bv4w63Ep3" data-bvid="BV1Bv4w63Ep3">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="ue">
+      <div class="project-media">
+        <span class="engine-badge">UE · Blueprint</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1jz4w6BEEg&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>古建纪行 · 文化体验</h3>
+        <div class="role">团队项目</div>
+        <p class="desc">时空穿越 + 古建守护主题的 3D 文化体验，三场景三玩法。数据驱动对话树、蓝图接口解耦、自定义 BTTask 路点巡逻、UMG 拖放背包、运行时构件搭建。</p>
+        <div class="tech">
+          <span>UE</span><span>纯蓝图架构</span><span>DataTable 对话树</span><span>蓝图接口</span><span>Niagara</span><span>LevelSequence</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1jz4w6BEEg" data-bvid="BV1jz4w6BEEg">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="ue">
+      <div class="project-media">
+        <span class="engine-badge">UE · PCG</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Ei4w66EF6&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>UE PCG · 程序化生成系列</h3>
+        <div class="role">单人 · 系列实验</div>
+        <p class="desc">基于 UE5 PCG 框架的程序化内容生成系列：道路生成（样条线/关卡实例）、森林与建筑群、河流、绿化带、农作物、地砖等程序化场景生成。</p>
+        <div class="tech">
+          <span>UE 5 PCG</span><span>样条线</span><span>关卡实例</span><span>程序化地形</span><span>植被散布</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1Ei4w66EF6" data-bvid="BV1Ei4w66EF6">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" data-category="blender render">
+      <div class="project-media">
+        <span class="engine-badge">Blender</span>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1iz4w6BE6m&autoplay=0&danmaku=0" allowfullscreen></iframe>
+      </div>
+      <div class="project-body">
+        <h3>启光冲刺 · Blender 建模渲染</h3>
+        <div class="role">单人 · 3D 建模</div>
+        <p class="desc">Blender 三维建模与渲染作品，包含完整场景搭建、材质、灯光与渲染输出，配合动画演示呈现最终视觉效果。</p>
+        <div class="tech">
+          <span>Blender</span><span>建模</span><span>材质</span><span>灯光</span><span>渲染</span>
+        </div>
+        <div class="project-links">
+          <a class="link-bili" href="https://www.bilibili.com/video/BV1iz4w6BE6m" data-bvid="BV1iz4w6BE6m">▶ B站观看</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-head">
+    <div class="eyebrow">CONTACT</div>
+    <h2>联系方式</h2>
+    <div class="bar"></div>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h3>期待与你 <span>交流</span></h3>
+      <p>如果你对我的作品感兴趣，或有实习、项目合作、技术交流的机会，欢迎通过以下方式联系我。</p>
+      <ul class="contact-list">
+        <li>
+          <div class="c-icon">✉️</div>
+          <div><div class="c-label">EMAIL</div><a href="mailto:3127957694@qq.com"><div class="c-value">3127957694@qq.com</div></a></div>
+        </li>
+        <li>
+          <div class="c-icon">📱</div>
+          <div><div class="c-label">PHONE</div><a href="tel:13546834869"><div class="c-value">13546834869</div></a></div>
+        </li>
+        <li>
+          <div class="c-icon">📺</div>
+          <div><div class="c-label">BILIBILI</div><a href="https://space.bilibili.com/1149213314" target="_blank"><div class="c-value">doujuwen · B站主页</div></a></div>
+        </li>
+        <li>
+          <div class="c-icon">💻</div>
+          <div><div class="c-label">GITHUB</div><a href="#" data-github><div class="c-value" data-placeholder="GitHub">待填写GitHub链接</div></a></div>
+        </li>
+      </ul>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <label>你的名字</label>
+      <input type="text" name="name" placeholder="怎么称呼你？">
+      <label>你的邮箱</label>
+      <input type="email" name="email" placeholder="your@email.com">
+      <label>留言内容</label>
+      <textarea name="message" placeholder="想对我说的话..."></textarea>
+      <button type="submit" class="btn solid">发送留言</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© <span id="year"></span> <span class="mono">doujuwen</span> · 虚拟现实技术应用专业 · 游戏开发作品集</p>
+  <p style="margin-top:6px;font-size:12px">Built with Unity · Unreal Engine · AR/VR · Shader</p>
+</footer>
+
+<div class="video-modal" id="videoModal" onclick="if(event.target===this)closeVideo()">
+  <div class="video-modal-inner">
+    <button class="video-modal-close" onclick="closeVideo()">×</button>
+    <iframe id="videoFrame" src="" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>
+  </div>
+</div>
+
+<script>
+// 背景互动粒子
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  const COLORS = ['#00f0ff','#ff2d78','#b44bff','#39ffa0'];
+  let W, H;
+  function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+  let ps = [];
+  for(let i=0;i<100;i++){
+    ps.push({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3, r:Math.random()*1.8+.6, c:COLORS[i%4], a:Math.random()*.5+.15});
+  }
+  const mouse = {x:null,y:null};
+  addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
+  addEventListener('click', e => {
+    for(let i=0;i<10;i++){
+      const ang = Math.PI*2/10*i;
+      ps.push({x:e.clientX,y:e.clientY,vx:Math.cos(ang)*1.6,vy:Math.sin(ang)*1.6,r:Math.random()*2+1,c:COLORS[i%4],a:.8,life:1,ripple:true});
+    }
+  });
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=ps.length-1;i>=0;i--){
+      const p = ps[i];
+      if(mouse.x!==null && !p.ripple){
+        const dx=mouse.x-p.x, dy=mouse.y-p.y, d=Math.hypot(dx,dy);
+        if(d<140 && d>1){ const f=(140-d)/140*.06; p.vx+=dx/d*f; p.vy+=dy/d*f; }
+      }
+      p.vx*=.97; p.vy*=.97; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W){p.vx*=-1;} if(p.y<0||p.y>H){p.vy*=-1;}
+      if(p.life!==undefined){ p.life-=.02; if(p.life<=0){ps.splice(i,1);continue;} p.a=p.life; }
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c; ctx.globalAlpha=p.a; ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// 年份
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// 导航滚动高亮
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    const top = s.offsetTop - 100;
+    if (window.scrollY >= top) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// 项目筛选
+const filterBtns = document.querySelectorAll('.filter-btn');
+const cards = document.querySelectorAll('.project-card');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    cards.forEach(card => {
+      const cats = card.dataset.category.split(' ');
+      const show = f === 'all' || cats.includes(f);
+      card.style.display = show ? '' : 'none';
+    });
+  });
+});
+
+// 表单提交（占位，后续可接真实后端）
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const msg = form.message.value.trim();
+  if (!name || !email || !msg) { alert('请填写完整信息'); return; }
+  alert('感谢你的留言！我已收到（当前为演示模式，可接入真实后端）');
+  form.reset();
+}
+
+// B站视频弹窗播放
+function openVideo(bvid){
+  const modal = document.getElementById('videoModal');
+  document.getElementById('videoFrame').src = 'https://player.bilibili.com/player.html?bvid=' + bvid + '&autoplay=1&danmaku=0&high_quality=1';
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeVideo(){
+  document.getElementById('videoModal').classList.remove('show');
+  document.getElementById('videoFrame').src = '';
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.link-bili').forEach(a => {
+  a.addEventListener('click', e => {
+    const bvid = a.dataset.bvid;
+    if(bvid){ e.preventDefault(); openVideo(bvid); }
+  });
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeVideo(); });
+
+// 全息技能云互动
+const holoDesc = document.getElementById('holoDesc');
+document.querySelectorAll('.holo-tag').forEach(tag => {
+  tag.addEventListener('mouseenter', () => { holoDesc.textContent = tag.dataset.desc; });
+  tag.addEventListener('mouseleave', () => { holoDesc.textContent = '悬停标签查看技能详情'; });
+  tag.addEventListener('click', () => { document.getElementById('skills').scrollIntoView({behavior:'smooth'}); });
+});
+const holoPanel = document.getElementById('holoPanel');
+if(holoPanel){
+  holoPanel.addEventListener('mousemove', e => {
+    const r = holoPanel.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    const bg = holoPanel.querySelector('.holo-bg');
+    bg.style.transform = 'translate(' + (x*12) + 'px,' + (y*12) + 'px) scale(1.05)';
+  });
+  holoPanel.addEventListener('mouseleave', () => {
+    holoPanel.querySelector('.holo-bg').style.transform = '';
+  });
+}
+
+// 滚动淡入 + 技能进度条动画
+if('IntersectionObserver' in window){
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+    });
+  }, {threshold: 0.12});
+  document.querySelectorAll('.skill-card, .project-card, .about-grid > div, .contact-wrap > div').forEach(el => {
+    el.classList.add('reveal');
+    revealObserver.observe(el);
+  });
+  document.querySelectorAll('.skill-bar i').forEach(bar => {
+    const target = bar.style.width;
+    bar.style.width = '0';
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          bar.style.transition = 'width 1s ease';
+          bar.style.width = target;
+          obs.unobserve(bar);
+        }
+      });
+    }, {threshold: 0.5});
+    obs.observe(bar);
+  });
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>
