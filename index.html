@@ -709,11 +709,11 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         </li>
         <li>
           <div class="c-icon">💻</div>
-          <div><div class="c-label">GITHUB</div><a href="#" data-github><div class="c-value" data-placeholder="GitHub">待填写GitHub链接</div></a></div>
+          <div><div class="c-label">GITHUB</div><a href="https://github.com/doujuwen" target="_blank"><div class="c-value">doujuwen · GitHub</div></a></div>
         </li>
       </ul>
     </div>
-    <form class="contact-form" onsubmit="handleSubmit(event)">
+    <form class="contact-form" action="https://formsubmit.co/3127957694@qq.com" method="POST" onsubmit="handleSubmit(event)">
       <label>你的名字</label>
       <input type="text" name="name" placeholder="怎么称呼你？">
       <label>你的邮箱</label>
@@ -810,7 +810,7 @@ filterBtns.forEach(btn => {
   });
 });
 
-// 表单提交（占位，后续可接真实后端）
+// 表单提交（通过 FormSubmit 转发到 QQ 邮箱）
 function handleSubmit(e) {
   e.preventDefault();
   const form = e.target;
@@ -818,8 +818,33 @@ function handleSubmit(e) {
   const email = form.email.value.trim();
   const msg = form.message.value.trim();
   if (!name || !email || !msg) { alert('请填写完整信息'); return; }
-  alert('感谢你的留言！我已收到（当前为演示模式，可接入真实后端）');
-  form.reset();
+
+  const btn = form.querySelector('button[type="submit"]');
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '发送中...';
+
+  fetch('https://formsubmit.co/ajax/3127957694@qq.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ name: name, email: email, message: msg, _subject: '作品集网站新留言：' + name })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success === 'true' || data.success === true) {
+        alert('感谢你的留言！我已收到，会尽快回复你 😊');
+        form.reset();
+      } else {
+        alert('发送失败，请稍后重试，或直接发邮件给我：3127957694@qq.com');
+      }
+    })
+    .catch(() => {
+      alert('发送失败（网络问题），请直接发邮件给我：3127957694@qq.com');
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    });
 }
 
 // B站视频弹窗播放
