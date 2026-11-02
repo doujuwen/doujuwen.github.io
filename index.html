@@ -3,8 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>游戏开发 · AR · 虚拟现实 作品集</title>
-<meta name="description" content="虚拟现实技术应用专业学生作品集：Unity、Unreal Engine、AR/VR、Shader、Blender 项目展示">
+<title>doujuwen 作品集 | 游戏开发 · AR · 虚拟现实</title>
+<meta name="description" content="doujuwen 的个人作品集：虚拟现实技术应用专业开发者，专注 Unity、Unreal Engine、AR/VR 交互、Shader 渲染、Blender 与程序化生成，共 9 个完整项目。">
+<meta name="author" content="doujuwen">
+<meta name="theme-color" content="#05060a">
+<!-- Open Graph（微信/QQ/微博分享卡片） -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="doujuwen 作品集 | 游戏开发 · AR · 虚拟现实">
+<meta property="og:description" content="Unity、Unreal Engine、AR/VR、Shader、Blender 等 9 个完整项目展示">
+<meta property="og:url" content="https://doujuwen.me/">
+<meta property="og:image" content="https://doujuwen.me/images/cyber-bg.png">
+<meta property="og:site_name" content="doujuwen 作品集">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="doujuwen 作品集 | 游戏开发 · AR · 虚拟现实">
+<meta name="twitter:description" content="Unity、Unreal Engine、AR/VR、Shader、Blender 等 9 个完整项目展示">
+<meta name="twitter:image" content="https://doujuwen.me/images/cyber-bg.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305060a'/%3E%3Cpath d='M10 7v18M10 7h7a9 9 0 0 1 0 18h-7' fill='none' stroke='%2300f0ff' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#05060a;
@@ -338,6 +353,19 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease}
 .reveal.visible{opacity:1;transform:none}
 
+/* 返回顶部按钮 */
+.back-top{
+  position:fixed;right:24px;bottom:24px;z-index:90;
+  width:44px;height:44px;border-radius:4px;
+  border:1px solid var(--cyan);background:rgba(5,6,10,.7);
+  color:var(--cyan);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transform:translateY(12px);
+  transition:.25s;backdrop-filter:blur(8px);
+}
+.back-top.show{opacity:1;visibility:visible;transform:none}
+.back-top:hover{background:var(--cyan);color:#05060a;box-shadow:0 0 16px rgba(0,240,255,.5)}
+
 /* 响应式 */
 @media(max-width:768px){
   nav{padding:14px 20px}
@@ -522,7 +550,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="ar unity">
       <div class="project-media">
         <span class="engine-badge">PICO 4 · Unity</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEQ6&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEQ6&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>黄皮耗子你咋这么能吃</h3>
@@ -540,7 +568,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="unity">
       <div class="project-media">
         <span class="engine-badge">Unity</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEDg&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEDg&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>飞机大战 · 2D 弹幕射击</h3>
@@ -558,7 +586,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="unity">
       <div class="project-media">
         <span class="engine-badge">Unity</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6SEBM&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6SEBM&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>Football · 双人足球对战</h3>
@@ -576,7 +604,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="render unity">
       <div class="project-media">
         <span class="engine-badge">Unity</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1cg4A67E9y&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1cg4A67E9y&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>图像渲染 · 光照实验</h3>
@@ -594,7 +622,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="unity">
       <div class="project-media">
         <span class="engine-badge">Unity</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wg4A67EuG&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1wg4A67EuG&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>立方之围 · 载具射击</h3>
@@ -612,7 +640,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="ue">
       <div class="project-media">
         <span class="engine-badge">UE · GAS</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bv4w63Ep3&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bv4w63Ep3&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>长夜守像 · 动作 × 塔防</h3>
@@ -630,7 +658,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="ue">
       <div class="project-media">
         <span class="engine-badge">UE · Blueprint</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1jz4w6BEEg&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1jz4w6BEEg&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>古建纪行 · 文化体验</h3>
@@ -648,7 +676,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="ue">
       <div class="project-media">
         <span class="engine-badge">UE · PCG</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Ei4w66EF6&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Ei4w66EF6&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>UE PCG · 程序化生成系列</h3>
@@ -666,7 +694,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
     <div class="project-card" data-category="blender render">
       <div class="project-media">
         <span class="engine-badge">Blender</span>
-        <iframe src="https://player.bilibili.com/player.html?bvid=BV1iz4w6BE6m&autoplay=0&danmaku=0" allowfullscreen></iframe>
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1iz4w6BE6m&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
         <h3>启光冲刺 · Blender 建模渲染</h3>
@@ -730,6 +758,8 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
   <p style="margin-top:6px;font-size:12px">Built with Unity · Unreal Engine · AR/VR · Shader</p>
 </footer>
 
+<button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+
 <div class="video-modal" id="videoModal" onclick="if(event.target===this)closeVideo()">
   <div class="video-modal-inner">
     <button class="video-modal-close" onclick="closeVideo()">×</button>
@@ -747,7 +777,8 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
   function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
   resize(); addEventListener('resize', resize);
   let ps = [];
-  for(let i=0;i<100;i++){
+  const PARTICLE_COUNT = innerWidth < 768 ? 50 : 100;
+  for(let i=0;i<PARTICLE_COUNT;i++){
     ps.push({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3, r:Math.random()*1.8+.6, c:COLORS[i%4], a:Math.random()*.5+.15});
   }
   const mouse = {x:null,y:null};
@@ -792,6 +823,15 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(a => {
     a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
+});
+
+// 返回顶部按钮
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('show', window.scrollY > 400);
+});
+backTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // 项目筛选
