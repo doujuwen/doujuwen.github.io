@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>doujuwen 作品集 | 游戏开发 · AR · 虚拟现实</title>
+<title>doujuwen 作品集 | 游戏开发 · XR · 虚拟现实</title>
 <meta name="description" content="doujuwen 的个人作品集：虚拟现实技术应用专业开发者，专注 Unity、Unreal Engine、XR 交互、Shader 渲染、Blender 与程序化生成，共 12 个完整项目。">
 <meta name="author" content="doujuwen">
-<meta name="theme-color" content="#05060a">
+<meta name="theme-color" content="#0a0908">
 <!-- Open Graph（微信/QQ/微博分享卡片） -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="doujuwen 作品集 | 游戏开发 · AR · 虚拟现实">
@@ -19,400 +19,83 @@
 <meta name="twitter:title" content="doujuwen 作品集 | 游戏开发 · XR · 虚拟现实">
 <meta name="twitter:description" content="Unity、Unreal Engine、XR、Shader、Blender 等 12 个完整项目展示">
 <meta name="twitter:image" content="https://doujuwen.me/images/cyber-bg.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305060a'/%3E%3Cpath d='M10 7v18M10 7h7a9 9 0 0 1 0 18h-7' fill='none' stroke='%2300f0ff' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
-<style>
-:root{
-  --bg:#05060a;
-  --bg2:#0a0c14;
-  --panel:#0e1120;
-  --panel2:#141829;
-  --line:#232a45;
-  --cyan:#00f0ff;
-  --magenta:#ff2d78;
-  --purple:#b44bff;
-  --yellow:#ffd23f;
-  --green:#39ffa0;
-  --text:#e8eaf6;
-  --muted:#8b93b0;
-  --font:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-  --mono:'Cascadia Code','JetBrains Mono',Consolas,monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.7;
-  overflow-x:hidden;
-}
-::selection{background:var(--magenta);color:#fff}
-a{color:inherit;text-decoration:none}
-
-/* 网格背景 */
-body::before{
-  content:"";
-  position:fixed;inset:0;z-index:-2;
-  background:
-    linear-gradient(rgba(0,240,255,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,240,255,.05) 1px,transparent 1px);
-  background-size:48px 48px;
-}
-body::after{
-  content:"";
-  position:fixed;inset:0;z-index:-2;
-  background:
-    radial-gradient(ellipse 60% 40% at 15% 0%,rgba(180,75,255,.15),transparent 60%),
-    radial-gradient(ellipse 50% 40% at 85% 10%,rgba(0,240,255,.12),transparent 60%),
-    radial-gradient(ellipse 70% 50% at 50% 100%,rgba(255,45,120,.08),transparent 60%);
-  pointer-events:none;
-}
-
-/* 背景互动粒子层 */
-#bgCanvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
-
-/* 扫描线 */
-.scanline{
-  position:fixed;left:0;right:0;height:2px;z-index:50;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-  opacity:.25;pointer-events:none;
-  animation:scan 8s linear infinite;
-}
-@keyframes scan{0%{top:-2px}100%{top:100%}}
-
-/* 导航 */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 32px;
-  background:rgba(5,6,10,.75);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line);
-}
-.logo{
-  font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:1px;
-  color:var(--cyan);text-shadow:0 0 12px rgba(0,240,255,.6);
-}
-.logo b{color:var(--magenta)}
-.nav-links{display:flex;gap:28px;list-style:none}
-.nav-links a{
-  font-size:14px;color:var(--muted);position:relative;transition:.2s;
-}
-.nav-links a:hover,.nav-links a.active{color:var(--cyan)}
-.nav-links a::after{
-  content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;
-  background:var(--cyan);transition:.25s;box-shadow:0 0 8px var(--cyan);
-}
-.nav-links a:hover::after,.nav-links a.active::after{width:100%}
-.nav-toggle{display:none;font-size:24px;color:var(--cyan);cursor:pointer;background:none;border:none}
-
-/* Hero */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:120px 24px 60px;position:relative;
-}
-.hero-tag{
-  font-family:var(--mono);font-size:13px;letter-spacing:3px;color:var(--green);
-  border:1px solid rgba(57,255,160,.4);padding:6px 16px;border-radius:2px;
-  margin-bottom:28px;background:rgba(57,255,160,.05);
-}
-.hero h1{
-  font-size:clamp(34px,6vw,72px);font-weight:800;line-height:1.15;letter-spacing:1px;
-  margin-bottom:18px;
-}
-.gradient-text{
-  background:linear-gradient(120deg,var(--cyan),var(--purple),var(--magenta));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero p.sub{
-  max-width:640px;color:var(--muted);font-size:17px;margin-bottom:36px;
-}
-.hero-cta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-.btn{
-  font-family:var(--mono);font-size:14px;padding:13px 28px;cursor:pointer;
-  border:1px solid var(--cyan);color:var(--cyan);background:transparent;border-radius:2px;
-  position:relative;overflow:hidden;transition:.25s;letter-spacing:1px;
-}
-.btn:hover{background:rgba(0,240,255,.1);box-shadow:0 0 20px rgba(0,240,255,.4)}
-.btn.solid{background:var(--magenta);border-color:var(--magenta);color:#fff}
-.btn.solid:hover{background:#ff4d8d;box-shadow:0 0 24px rgba(255,45,120,.5)}
-.scroll-hint{
-  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
-  color:var(--muted);font-size:12px;font-family:var(--mono);letter-spacing:2px;
-  animation:bob 2s ease-in-out infinite;
-}
-@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,10px)}}
-
-/* 通用 section */
-section{padding:90px 32px;max-width:1180px;margin:0 auto}
-.sec-head{margin-bottom:50px}
-.sec-head .eyebrow{
-  font-family:var(--mono);color:var(--magenta);font-size:13px;letter-spacing:3px;margin-bottom:10px;
-}
-.sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:1px}
-.sec-head .bar{
-  width:64px;height:3px;margin-top:16px;background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  box-shadow:0 0 12px var(--cyan);
-}
-
-/* 关于我 */
-.about-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:start}
-.holo-panel{
-  position:relative;border:1px solid var(--line);border-radius:6px;
-  background:var(--panel);overflow:hidden;min-height:500px;
-}
-.holo-panel .corner{z-index:8}
-.holo-bg{
-  position:absolute;inset:-4px;background-image:url('images/cyber-bg.png');
-  background-size:cover;background-position:center;opacity:.45;
-  transition:transform .4s ease;
-}
-.holo-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(5,6,10,.5),rgba(5,6,10,.82));
-}
-.holo-scan{
-  position:absolute;left:0;right:0;height:2px;z-index:4;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-  opacity:.3;animation:holoScan 5s linear infinite;
-}
-@keyframes holoScan{0%{top:-2px}100%{top:100%}}
-.holo-center{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  text-align:center;z-index:5;width:78%;pointer-events:none;
-}
-.holo-center-icon{
-  font-size:34px;color:var(--cyan);margin-bottom:10px;
-  text-shadow:0 0 20px rgba(0,240,255,.7);
-  animation:holoPulse 2.5s ease-in-out infinite;
-}
-@keyframes holoPulse{0%,100%{opacity:.5}50%{opacity:1}}
-.holo-center-title{
-  font-family:var(--mono);font-size:12px;color:var(--muted);
-  letter-spacing:3px;margin-bottom:10px;
-}
-.holo-center-desc{
-  font-size:13px;color:var(--cyan);min-height:40px;transition:.2s;
-  text-shadow:0 0 10px rgba(0,240,255,.4);line-height:1.5;
-}
-.holo-tags{position:absolute;inset:0;z-index:6}
-.holo-tag{
-  position:absolute;font-family:var(--mono);font-size:12px;
-  padding:6px 14px;border:1px solid var(--line);border-radius:20px;
-  color:var(--text);background:rgba(10,12,20,.72);cursor:pointer;
-  transition:.25s;backdrop-filter:blur(4px);white-space:nowrap;
-  animation:tagFloat 4s ease-in-out infinite;user-select:none;
-}
-.holo-tag:hover{
-  color:#05060a;border-color:var(--cyan);background:var(--cyan);
-  box-shadow:0 0 18px rgba(0,240,255,.6);transform:scale(1.15);z-index:10;
-  animation-play-state:paused;
-}
-@keyframes tagFloat{0%,100%{margin-top:0}50%{margin-top:-8px}}
-.corner{position:absolute;width:20px;height:20px;border:2px solid var(--cyan)}
-.corner.tl{top:-2px;left:-2px;border-right:none;border-bottom:none}
-.corner.tr{top:-2px;right:-2px;border-left:none;border-bottom:none}
-.corner.bl{bottom:-2px;left:-2px;border-right:none;border-top:none}
-.corner.br{bottom:-2px;right:-2px;border-left:none;border-top:none}
-.about-text h3{font-size:22px;margin-bottom:14px}
-.about-text h3 span{color:var(--cyan)}
-.about-text p{color:var(--muted);margin-bottom:16px}
-.about-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.about-tags span{
-  font-family:var(--mono);font-size:12px;padding:6px 14px;border:1px solid var(--line);
-  border-radius:2px;color:var(--text);background:var(--panel2);transition:.2s;
-}
-.about-tags span:hover{border-color:var(--cyan);color:var(--cyan)}
-
-/* 技能矩阵 */
-.skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-.skill-card{
-  background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:26px;
-  transition:.25s;position:relative;overflow:hidden;
-}
-.skill-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 30px rgba(0,240,255,.12)}
-.skill-card .icon{font-size:28px;margin-bottom:14px}
-.skill-card h4{font-size:17px;margin-bottom:12px}
-.skill-card .skill-bar{
-  height:6px;background:var(--bg2);border-radius:3px;margin:14px 0;overflow:hidden;
-}
-.skill-card .skill-bar i{
-  display:block;height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  box-shadow:0 0 10px var(--cyan);
-}
-.skill-card ul{list-style:none}
-.skill-card li{color:var(--muted);font-size:13px;padding:4px 0;position:relative;padding-left:18px}
-.skill-card li::before{
-  content:"";position:absolute;left:0;top:12px;width:6px;height:6px;
-  background:var(--cyan);transform:rotate(45deg);
-}
-
-/* 作品展示 */
-.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
-.filter-btn{
-  font-family:var(--mono);font-size:13px;padding:9px 18px;cursor:pointer;
-  background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:2px;transition:.2s;
-}
-.filter-btn:hover{color:var(--cyan);border-color:var(--cyan)}
-.filter-btn.active{background:var(--cyan);color:#05060a;border-color:var(--cyan);box-shadow:0 0 16px rgba(0,240,255,.4)}
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:26px}
-.project-card{
-  background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;
-  transition:.25s;display:flex;flex-direction:column;
-}
-.project-card:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 24px rgba(0,240,255,.15)}
-.project-media{
-  position:relative;aspect-ratio:16/9;background:var(--bg2);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-}
-.project-media video{width:100%;height:100%;object-fit:contain;background:#000}
-.project-media iframe{width:100%;height:100%;border:none;display:block}
-.project-media .placeholder{
-  display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);
-}
-.project-media .placeholder .pl-icon{font-size:40px;color:var(--cyan);opacity:.6}
-.project-media .placeholder span{font-family:var(--mono);font-size:12px;letter-spacing:2px}
-.project-media .engine-badge{
-  position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:11px;
-  padding:4px 10px;background:rgba(5,6,10,.85);border:1px solid var(--cyan);color:var(--cyan);border-radius:2px;
-}
-.project-body{padding:22px;display:flex;flex-direction:column;flex:1}
-.project-body h3{font-size:19px;margin-bottom:6px}
-.project-body .role{font-size:12px;color:var(--magenta);font-family:var(--mono);margin-bottom:12px}
-.project-body .desc{color:var(--muted);font-size:14px;margin-bottom:16px;flex:1}
-.project-body .tech{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.project-body .tech span{
-  font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:2px;
-  background:var(--panel2);border:1px solid var(--line);color:var(--muted);
-}
-.project-links{display:flex;gap:12px}
-.project-links a{
-  font-family:var(--mono);font-size:12px;padding:8px 16px;border-radius:2px;transition:.2s;
-}
-.link-bili{background:var(--magenta);color:#fff}
-.link-bili:hover{background:#ff4d8d;box-shadow:0 0 14px rgba(255,45,120,.5)}
-.link-local{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
-.link-local:hover{background:rgba(0,240,255,.1)}
-
-/* 联系方式 */
-.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-.contact-info h3{font-size:24px;margin-bottom:16px}
-.contact-info h3 span{color:var(--magenta)}
-.contact-info p{color:var(--muted);margin-bottom:30px}
-.contact-list{list-style:none;display:flex;flex-direction:column;gap:18px}
-.contact-list li{display:flex;align-items:center;gap:16px}
-.contact-list .c-icon{
-  width:46px;height:46px;border:1px solid var(--line);border-radius:4px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--panel);
-}
-.contact-list .c-label{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:1px}
-.contact-list .c-value{font-size:15px;color:var(--text)}
-.contact-list a:hover .c-value{color:var(--cyan)}
-.contact-form{
-  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:30px;
-}
-.contact-form label{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
-.contact-form input,.contact-form textarea{
-  width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:4px;
-  color:var(--text);padding:12px 14px;font-family:var(--font);font-size:14px;margin-bottom:20px;transition:.2s;
-}
-.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,.2)}
-.contact-form textarea{resize:vertical;min-height:120px}
-.contact-form .btn{width:100%}
-
-/* Footer */
-footer{
-  border-top:1px solid var(--line);padding:32px;text-align:center;
-  color:var(--muted);font-size:13px;margin-top:40px;
-}
-footer .mono{font-family:var(--mono);color:var(--cyan)}
-
-/* 视频弹窗 */
-.video-modal{
-  position:fixed;inset:0;z-index:200;display:none;
-  align-items:center;justify-content:center;
-  background:rgba(0,0,0,.85);backdrop-filter:blur(6px);padding:20px;
-}
-.video-modal.show{display:flex}
-.video-modal-inner{
-  position:relative;width:min(960px,94vw);aspect-ratio:16/9;
-  background:#000;border:1px solid var(--cyan);border-radius:6px;
-  box-shadow:0 0 40px rgba(0,240,255,.3);
-}
-.video-modal-inner iframe{width:100%;height:100%;border:none;border-radius:6px;display:block}
-.video-modal-close{
-  position:absolute;top:-16px;right:-16px;width:36px;height:36px;border-radius:50%;
-  background:var(--magenta);color:#fff;border:none;font-size:20px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;z-index:10;line-height:1;
-  box-shadow:0 0 14px rgba(255,45,120,.5);
-}
-.video-modal-close:hover{background:#ff4d8d}
-
-/* 滚动淡入动画 */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease}
-.reveal.visible{opacity:1;transform:none}
-
-/* 返回顶部按钮 */
-.back-top{
-  position:fixed;right:24px;bottom:24px;z-index:90;
-  width:44px;height:44px;border-radius:4px;
-  border:1px solid var(--cyan);background:rgba(5,6,10,.7);
-  color:var(--cyan);font-size:20px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;visibility:hidden;transform:translateY(12px);
-  transition:.25s;backdrop-filter:blur(8px);
-}
-.back-top.show{opacity:1;visibility:visible;transform:none}
-.back-top:hover{background:var(--cyan);color:#05060a;box-shadow:0 0 16px rgba(0,240,255,.5)}
-
-/* 响应式 */
-@media(max-width:768px){
-  nav{padding:14px 20px}
-  .nav-links{
-    position:fixed;top:60px;left:0;right:0;flex-direction:column;gap:0;
-    background:rgba(5,6,10,.97);border-bottom:1px solid var(--line);padding:10px 0;
-    display:none;
-  }
-  .nav-links.open{display:flex}
-  .nav-links li{padding:14px 24px}
-  .nav-toggle{display:block}
-  .about-grid,.contact-wrap{grid-template-columns:1fr}
-  section{padding:70px 20px}
-  .projects-grid{grid-template-columns:1fr}
-}
-</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0908'/%3E%3Cpath d='M10 7v18M10 7h7a9 9 0 0 1 0 18h-7' fill='none' stroke='%23e3b978' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="scanline"></div>
 <canvas id="bgCanvas"></canvas>
+<!-- 背景：液态金流光 -->
+<div class="bg-aurora" aria-hidden="true"><span></span><span></span></div>
+<!-- 背景：透视网格地面 + 地平线 -->
+<div class="bg-floor" aria-hidden="true"></div>
+<div class="bg-horizon" aria-hidden="true"></div>
 
-<nav>
-  <div class="logo">doujuwen <span style="color:var(--muted);font-weight:400;font-size:13px">作品集</span></div>
-  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
-  <ul class="nav-links">
-    <li><a href="#home" class="active">首页</a></li>
-    <li><a href="#about">关于我</a></li>
-    <li><a href="#skills">技能</a></li>
-    <li><a href="#projects">作品</a></li>
-    <li><a href="#contact">联系</a></li>
-  </ul>
-</nav>
+<!-- ===== 加载界面 ===== -->
+<div class="boot" id="boot">
+  <div class="boot-inner">
+    <div class="boot-brand">doujuwen<span>.dev</span></div>
+    <div class="boot-bar"><i id="bootBar"></i></div>
+    <div class="boot-row">
+      <span id="bootText">正在初始化引擎...</span>
+      <span id="bootPct">0%</span>
+    </div>
+    <div class="boot-hint">SYSTEM BOOT SEQUENCE<span class="boot-cursor"></span></div>
+  </div>
+</div>
+
+<!-- ===== 开始界面 ===== -->
+<div class="title" id="title">
+  <div class="title-grid"></div>
+  <div class="title-inner">
+    <div class="title-eyebrow">// PLAYER_01 · GAME &amp; XR DEVELOPER</div>
+    <h1 class="title-name">doujuwen</h1>
+    <div class="title-sub">虚拟现实技术应用 · 游戏 / XR 开发者</div>
+    <button class="start-btn" id="startBtn"><span class="start-icon">▶</span>PRESS START</button>
+    <div class="title-hint">点击开始 · 按 ENTER</div>
+  </div>
+</div>
+
+<header class="hud">
+  <div class="hud-player">
+    <span class="hud-dot"></span>
+    <span class="hud-id">PLAYER_01</span>
+    <span class="hud-name">doujuwen</span>
+  </div>
+  <nav class="hud-nav" id="hudNav">
+    <a href="#home" class="active"><i>01</i>HOME</a>
+    <a href="#about"><i>02</i>PROFILE</a>
+    <a href="#skills"><i>03</i>SKILLS</a>
+    <a href="#projects"><i>04</i>LEVELS</a>
+    <a href="#contact"><i>05</i>PARTY</a>
+  </nav>
+  <div class="hud-status">
+    <span class="hud-lv">LV.24</span>
+    <div class="hud-xp"><i style="width:64%"></i></div>
+  </div>
+  <button class="hud-toggle" id="hudToggle" aria-label="菜单">☰</button>
+</header>
 
 <section id="home" class="hero">
-  <div class="hero-tag">VIRTUAL REALITY · GAME DEV · XR</div>
-  <h1>虚拟现实技术应用<br><span class="gradient-text">游戏开发作品集</span></h1>
-  <p class="sub">专注于 Unity / Unreal Engine 游戏开发、AR 与虚拟现实交互、手写 Shader 渲染、程序化生成与 3D 建模。从玩法设计到引擎底层，从裸手交互到光线追踪，用代码构建沉浸式世界。</p>
-  <div class="hero-cta">
-    <a href="#projects" class="btn solid">查看作品</a>
-    <a href="#about" class="btn">了解我</a>
+  <div class="hero-left">
+    <div class="hero-tag">VIRTUAL REALITY · GAME DEV · XR</div>
+    <h1>虚拟现实技术应用<br><span class="gradient-text">游戏开发作品集</span></h1>
+    <p class="sub">专注于 Unity / Unreal Engine 游戏开发、XR开发、程序化生成与 3D 建模。从玩法设计到引擎底层，从裸手交互到光线追踪，用代码构建沉浸式世界。</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn solid">查看作品</a>
+      <a href="#about" class="btn">了解我</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <canvas id="hero3d"></canvas>
+    <div class="hero-3d-hint">拖动旋转 · DRAG TO ORBIT</div>
   </div>
   <div class="scroll-hint">▼ SCROLL</div>
 </section>
 
 <section id="about">
   <div class="sec-head">
-    <div class="eyebrow">ABOUT ME</div>
+    <div class="eyebrow">// PLAYER_PROFILE</div>
     <h2>关于我</h2>
     <div class="bar"></div>
   </div>
@@ -459,7 +142,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
 
 <section id="skills">
   <div class="sec-head">
-    <div class="eyebrow">SKILLS</div>
+    <div class="eyebrow">// SKILL_TREE</div>
     <h2>技能矩阵</h2>
     <div class="bar"></div>
   </div>
@@ -536,7 +219,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
 
 <section id="projects">
   <div class="sec-head">
-    <div class="eyebrow">PROJECTS</div>
+    <div class="eyebrow">// LEVEL_SELECT</div>
     <h2>作品展示</h2>
     <div class="bar"></div>
   </div>
@@ -555,6 +238,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEQ6&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 01</span><span class="level-status">CLEARED</span></div>
         <h3>黄皮耗子你咋这么能吃</h3>
         <div class="role">团队 3 人 · 负责喂养交互与跨场景数据传输</div>
         <p class="desc">PICO 4 彩色透视 + 裸手交互的 AR 养宠游戏，「切水果换口粮 → 亲手投喂」双场景资源循环。全程无手柄：捏合抓取 + Poke 戳击 + 手势识别。</p>
@@ -573,6 +257,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1mR436EEEJ&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 02</span><span class="level-status">CLEARED</span></div>
         <h3>LBS 抓宠 · 地图定位 AR</h3>
         <div class="role">单人开发</div>
         <p class="desc">基于地图定位（LBS）的增强现实抓宠游戏，将虚拟宠物投射到真实地理位置，玩家走到附近即可发现并捕捉，融合 GPS 定位、地图与 AR 实时渲染。</p>
@@ -591,6 +276,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1mR436EELs&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 03</span><span class="level-status">CLEARED</span></div>
         <h3>EasyAR 涂涂乐 · 图像识别</h3>
         <div class="role">单人开发</div>
         <p class="desc">基于 EasyAR 的图像识别 AR 应用，扫描涂色卡片即可识别并在其上叠加 3D 立体模型，实现「纸上涂色 → 屏幕立体呈现」的增强现实互动。</p>
@@ -609,6 +295,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1Cw4G6CEfj&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 04</span><span class="level-status">CLEARED</span></div>
         <h3>AR 面部识别 · Face Tracking</h3>
         <div class="role">单人开发</div>
         <p class="desc">基于 AR Foundation 的面部识别 AR 应用，实时捕捉人脸关键点并叠加面部特效、面具或妆容，实现丰富的 AR 脸部互动效果。</p>
@@ -627,6 +314,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6UEDg&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 05</span><span class="level-status">CLEARED</span></div>
         <h3>飞机大战 · 2D 弹幕射击</h3>
         <div class="role">单人开发 · 约 2300 行 C#</div>
         <p class="desc">竖版街机弹幕射击游戏，完整实现「走位 → 击杀 → 强化 → Boss 递进」核心循环。4 套 Boss 弹幕 + 自研距离判定系统 + 全程序化音频。</p>
@@ -645,6 +333,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1wM4A6SEBM&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 06</span><span class="level-status">CLEARED</span></div>
         <h3>Football · 双人足球对战</h3>
         <div class="role">单人开发</div>
         <p class="desc">2D 视角 3D 场景的双人同屏足球对战，完整「开球 → 对抗 → 进球 → 回合重置 → 结算」比赛闭环。枚举状态机 + 球权系统 + 蓄力射门。</p>
@@ -663,6 +352,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1cg4A67E9y&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 07</span><span class="level-status">CLEARED</span></div>
         <h3>图像渲染 · 光照实验</h3>
         <div class="role">单人开发 · Shader</div>
         <p class="desc">把手写 Shader、光照公式、渲染路径、光栅化状态与几何变换拆成 6 个可交互对比场景。5 种光照模型 + 前向渲染双 Pass + 模板缓冲遮罩。</p>
@@ -681,6 +371,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1wg4A67EuG&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 08</span><span class="level-status">CLEARED</span></div>
         <h3>立方之围 · 载具射击</h3>
         <div class="role">单人开发</div>
         <p class="desc">末日城市废墟中的第三人称载具射击，步兵/坦克/无人机三形态切换。坦克抛物线弹道二分搜索解算、NavMesh 混合 AI、真布娃娃死亡。</p>
@@ -699,6 +390,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bv4w63Ep3&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 09</span><span class="level-status">CLEARED</span></div>
         <h3>长夜守像 · 动作 × 塔防</h3>
         <div class="role">团队项目 · 负责除场景外全部内容</div>
         <p class="desc">基于 UE5 GAS 的动作塔防：玩家既是近战法师也是造塔指挥官。7 个 GA / 21 个 GE / 8 个 GC / 19 个 Tag 四层解耦，伤害对齐动画打击帧。</p>
@@ -717,6 +409,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1jz4w6BEEg&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 10</span><span class="level-status">CLEARED</span></div>
         <h3>古建纪行 · 文化体验</h3>
         <div class="role">团队项目</div>
         <p class="desc">时空穿越 + 古建守护主题的 3D 文化体验，三场景三玩法。数据驱动对话树、蓝图接口解耦、自定义 BTTask 路点巡逻、UMG 拖放背包、运行时构件搭建。</p>
@@ -735,6 +428,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1Ei4w66EF6&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 11</span><span class="level-status">CLEARED</span></div>
         <h3>UE PCG · 程序化生成系列</h3>
         <div class="role">单人 · 系列实验</div>
         <p class="desc">基于 UE5 PCG 框架的程序化内容生成系列：道路生成（样条线/关卡实例）、森林与建筑群、河流、绿化带、农作物、地砖等程序化场景生成。</p>
@@ -753,6 +447,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
         <iframe src="https://player.bilibili.com/player.html?bvid=BV1iz4w6BE6m&autoplay=0&danmaku=0" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="project-body">
+        <div class="level-head"><span class="level-no">LEVEL 12</span><span class="level-status">CLEARED</span></div>
         <h3>启光冲刺 · Blender 建模渲染</h3>
         <div class="role">单人 · 3D 建模</div>
         <p class="desc">Blender 三维建模与渲染作品，包含完整场景搭建、材质、灯光与渲染输出，配合动画演示呈现最终视觉效果。</p>
@@ -770,7 +465,7 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
 
 <section id="contact">
   <div class="sec-head">
-    <div class="eyebrow">CONTACT</div>
+    <div class="eyebrow">// JOIN_PARTY</div>
     <h2>联系方式</h2>
     <div class="bar"></div>
   </div>
@@ -814,6 +509,12 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
   <p style="margin-top:6px;font-size:12px">Built with Unity · Unreal Engine · XR · Shader</p>
 </footer>
 
+<div class="progress-hud">
+  <span>PROGRESS</span>
+  <div class="progress-bar"><i id="progressBar"></i></div>
+  <span id="progressPct">0%</span>
+</div>
+
 <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
 
 <div class="video-modal" id="videoModal" onclick="if(event.target===this)closeVideo()">
@@ -824,11 +525,86 @@ footer .mono{font-family:var(--mono);color:var(--cyan)}
 </div>
 
 <script>
+// ===== 游戏化：加载序列 + 开始界面 =====
+(function(){
+  const boot = document.getElementById('boot');
+  const bootBar = document.getElementById('bootBar');
+  const bootPct = document.getElementById('bootPct');
+  const bootText = document.getElementById('bootText');
+  const title = document.getElementById('title');
+  const startBtn = document.getElementById('startBtn');
+
+  // 同一标签页会话内已看过开场，或带 ?nointro 参数 → 直接跳过（直达 3D 首屏）
+  try{
+    if(sessionStorage.getItem('dj_booted') || location.search.indexOf('nointro') > -1){
+      if(boot) boot.classList.add('done');
+      if(title) title.style.display = 'none';
+      return;
+    }
+    sessionStorage.setItem('dj_booted','1');
+  }catch(e){}
+
+  const steps = [
+    {p:18, t:'初始化渲染管线...'},
+    {p:38, t:'加载 Shader 资源...'},
+    {p:58, t:'编译 Gameplay Ability...'},
+    {p:76, t:'同步 B 站视频流...'},
+    {p:92, t:'构建 3D 场景...'},
+    {p:100, t:'系统就绪。'}
+  ];
+  let i = 0;
+  const timer = setInterval(() => {
+    if(i >= steps.length){ clearInterval(timer); return; }
+    const s = steps[i++];
+    bootBar.style.width = s.p + '%';
+    bootPct.textContent = s.p + '%';
+    bootText.textContent = s.t;
+  }, 220);
+
+  setTimeout(() => { if(boot) boot.classList.add('done'); }, 1500);
+  setTimeout(() => { if(boot && !boot.classList.contains('done')) boot.classList.add('done'); }, 3500);
+
+  function enter(){
+    if(!title || title.classList.contains('hide')) return;
+    title.classList.add('hide');
+    setTimeout(() => { title.style.display = 'none'; }, 700);
+  }
+  if(startBtn) startBtn.addEventListener('click', enter);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && title && !title.classList.contains('hide')) enter();
+  });
+})();
+
+// ===== HUD 移动端菜单 =====
+(function(){
+  const t = document.getElementById('hudToggle');
+  const n = document.getElementById('hudNav');
+  if(t && n){
+    t.addEventListener('click', () => n.classList.toggle('open'));
+    n.querySelectorAll('a').forEach(a => a.addEventListener('click', () => n.classList.remove('open')));
+  }
+})();
+
+// ===== 滚动进度 HUD =====
+(function(){
+  const bar = document.getElementById('progressBar');
+  const pct = document.getElementById('progressPct');
+  if(!bar || !pct) return;
+  function update(){
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = h > 0 ? Math.min(100, Math.round(window.scrollY / h * 100)) : 0;
+    bar.style.width = p + '%';
+    pct.textContent = p + '%';
+  }
+  window.addEventListener('scroll', update);
+  update();
+})();
+
 // 背景互动粒子
 (function(){
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d');
-  const COLORS = ['#00f0ff','#ff2d78','#b44bff','#39ffa0'];
+  const COLORS = ['#e3b978','#ff9a55','#b98a4e','#ffe0a0'];
   let W, H;
   function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
   resize(); addEventListener('resize', resize);
@@ -869,7 +645,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 // 导航滚动高亮
 const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
+const navLinks = document.querySelectorAll('.hud-nav a');
 window.addEventListener('scroll', () => {
   let current = '';
   sections.forEach(s => {
@@ -1012,6 +788,387 @@ if('IntersectionObserver' in window){
 } else {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
 }
+</script>
+
+<!-- ===== Three.js 3D 首屏（全局脚本版，支持双击 file:// 直接打开）===== -->
+<script src="lib/three.global.js"></script>
+<script>
+(function(){
+  if(typeof THREE === 'undefined') return;
+  const canvas = document.getElementById('hero3d');
+  if(!canvas) return;
+
+  let renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  }catch(e){
+    canvas.style.display = 'none';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+  camera.position.set(0, 0.3, 8);
+
+  const C_PRIMARY = 0xe3b978;
+  const C_ACCENT  = 0xff9a55;
+  const C_PURPLE  = 0xb98a4e;
+
+  // 光照
+  scene.add(new THREE.AmbientLight(0xffd7a0, 1.1));
+  const l1 = new THREE.PointLight(C_PRIMARY, 140, 55); l1.position.set(5, 5, 7); scene.add(l1);
+  const l2 = new THREE.PointLight(C_ACCENT, 90, 55);   l2.position.set(-6, -4, 5); scene.add(l2);
+  const l3 = new THREE.PointLight(C_PURPLE, 70, 55);   l3.position.set(0, 7, -5); scene.add(l3);
+
+  const group = new THREE.Group();
+  scene.add(group);
+  // ===== 主视觉：3D 游戏手柄 =====
+  const pad = new THREE.Group();
+  pad.scale.setScalar(1.18);
+  group.add(pad);
+
+  // --- 手柄外壳：2D 轮廓挤出成型 ---
+  const shellShape = new THREE.Shape();
+  shellShape.moveTo(-1.42, 0.18);
+  shellShape.quadraticCurveTo(-1.30, 0.76, -0.76, 0.78);
+  shellShape.lineTo(0.76, 0.78);
+  shellShape.quadraticCurveTo(1.30, 0.76, 1.42, 0.18);
+  shellShape.lineTo(1.44, -0.18);
+  shellShape.quadraticCurveTo(1.58, -0.74, 1.18, -0.96);
+  shellShape.quadraticCurveTo(0.92, -1.10, 0.66, -0.72);
+  shellShape.quadraticCurveTo(0.48, -0.46, 0, -0.46);
+  shellShape.quadraticCurveTo(-0.48, -0.46, -0.66, -0.72);
+  shellShape.quadraticCurveTo(-0.92, -1.10, -1.18, -0.96);
+  shellShape.quadraticCurveTo(-1.58, -0.74, -1.44, -0.18);
+  shellShape.closePath();
+
+  const shellGeo = new THREE.ExtrudeGeometry(shellShape, {
+    depth: 0.32, curveSegments: 20,
+    bevelEnabled: true, bevelThickness: 0.10, bevelSize: 0.10, bevelSegments: 3
+  });
+  shellGeo.translate(0, 0, -0.16);
+
+  const shell = new THREE.Mesh(shellGeo, new THREE.MeshStandardMaterial({
+    color: 0x141310, metalness: 0.94, roughness: 0.26,
+    emissive: 0x0b0a09, emissiveIntensity: 0.9
+  }));
+  pad.add(shell);
+
+  // 需要呼吸发光的材质集合
+  const padGlow = [];
+
+  // --- 前后霓虹轮廓 ---
+  [0.31, -0.31].forEach(function(z, i){
+    const pts = shellShape.getPoints(90).map(function(p){
+      return new THREE.Vector3(p.x * 1.014, p.y * 1.014, z);
+    });
+    pts.push(pts[0].clone());
+    const mat = new THREE.LineBasicMaterial({
+      color: i ? C_ACCENT : C_PRIMARY,
+      transparent: true, opacity: i ? 0.22 : 0.8
+    });
+    pad.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+    padGlow.push({ mat: mat, kind: 'op', base: i ? 0.22 : 0.8, amp: i ? 0.10 : 0.25 });
+  });
+
+  // --- 左右摇杆：凹槽 + 倾斜杆身 + 圆帽（一眼能看出是可推动的摇杆） ---
+  const socketMat = new THREE.MeshStandardMaterial({ color: 0x121110, metalness: 0.8, roughness: 0.6 });
+  const shaftMat  = new THREE.MeshStandardMaterial({ color: 0x2a2722, metalness: 0.9, roughness: 0.4 });
+  const capMat    = new THREE.MeshStandardMaterial({
+    color: 0xa8804a, metalness: 0.68, roughness: 0.42,
+    emissive: 0x4a3416, emissiveIntensity: 1.2
+  });
+  const socketGeo    = new THREE.CylinderGeometry(0.205, 0.205, 0.06, 34);
+  const shaftGeo     = new THREE.CylinderGeometry(0.072, 0.090, 0.16, 20);
+  const capGeo       = new THREE.SphereGeometry(0.158, 26, 18);
+
+  // [x, y, 倾斜角]  —— 左摇杆，垂直不倾斜
+  [[-0.80, 0.02, 0]].forEach(function(p){
+    const socket = new THREE.Mesh(socketGeo, socketMat);
+    socket.rotation.x = Math.PI / 2;
+    socket.position.set(p[0], p[1], 0.250);
+    pad.add(socket);
+
+    // 杆体整体倾斜（以凹槽为支点）
+    const stem = new THREE.Group();
+    stem.position.set(p[0], p[1], 0.280);
+    stem.rotation.y = p[2];
+
+    const shaft = new THREE.Mesh(shaftGeo, shaftMat);
+    shaft.rotation.x = Math.PI / 2;
+    shaft.position.z = 0.085;
+    stem.add(shaft);
+
+    const cap = new THREE.Mesh(capGeo, capMat);
+    cap.scale.set(1, 1, 0.86);
+    cap.position.z = 0.190;
+    stem.add(cap);
+
+    pad.add(stem);
+  });
+
+  // --- 右侧四颗功能键 ---
+  const FACE = [0xff9a55, 0xd9a860, 0x86b98a, 0xc9713f];
+  const btnGeo = new THREE.CylinderGeometry(0.072, 0.072, 0.085, 20);
+  [[0, 0.175], [0.175, 0], [0, -0.175], [-0.175, 0]].forEach(function(o, i){
+    const m = new THREE.MeshStandardMaterial({
+      color: FACE[i], emissive: FACE[i], emissiveIntensity: 0.9,
+      metalness: 0.6, roughness: 0.3
+    });
+    const b = new THREE.Mesh(btnGeo, m);
+    b.rotation.x = Math.PI / 2;
+    b.position.set(0.80 + o[0], 0.02 + o[1], 0.345);
+    pad.add(b);
+    padGlow.push({ mat: m, kind: 'emi', base: 0.55, amp: 0.45 });
+  });
+
+  // --- 中央两颗小键 + 灯条 ---
+  [-0.14, 0.14].forEach(function(x){
+    const pill = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.055, 0.055, 0.075, 16),
+      new THREE.MeshStandardMaterial({
+        color: 0x4a4338, metalness: 0.9, roughness: 0.3,
+        emissive: 0x1b150e, emissiveIntensity: 1
+      })
+    );
+    pill.rotation.x = Math.PI / 2;
+    pill.position.set(x, 0.34, 0.345);
+    pad.add(pill);
+  });
+
+  const lightBarMat = new THREE.MeshBasicMaterial({ color: C_PRIMARY, transparent: true, opacity: 0.85 });
+  const lightBar = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.035, 0.04), lightBarMat);
+  lightBar.position.set(0, 0.56, 0.35);
+  pad.add(lightBar);
+  padGlow.push({ mat: lightBarMat, kind: 'op', base: 0.85, amp: 0.2 });
+
+  // --- 顶部肩键 ---
+  [[-0.82, 1], [0.82, -1]].forEach(function(p){
+    const bump = new THREE.Mesh(
+      new THREE.BoxGeometry(0.50, 0.12, 0.30),
+      new THREE.MeshStandardMaterial({
+        color: 0x221f1a, metalness: 0.9, roughness: 0.34,
+        emissive: 0x120e08, emissiveIntensity: 0.7
+      })
+    );
+    bump.position.set(p[0], 0.79, -0.05);
+    bump.rotation.z = p[1] * 0.05;
+    pad.add(bump);
+  });
+
+  // ===== 背景：方块下落 =====
+  const UNIT = 0.46;
+  const PALETTE = [C_PRIMARY, C_ACCENT, C_PURPLE, 0x86b98a];
+
+  const SHAPES = {
+    T: [[-1,0],[0,0],[1,0],[0,1]],
+    J: [[0,0],[0,1],[0,2],[1,2]],
+    L: [[0,0],[0,1],[0,2],[1,0]],
+    S: [[0,0],[1,0],[1,1],[2,1]],
+    Z: [[1,0],[2,0],[0,1],[1,1]],
+    I: [[0,0],[1,0],[2,0],[3,0]],
+    O: [[0,0],[1,0],[0,1],[1,1]]
+  };
+
+  const cubeGeo = new THREE.BoxGeometry(UNIT*0.88, UNIT*0.88, UNIT*0.88);
+  const edgeGeo = new THREE.EdgesGeometry(cubeGeo);
+
+  function makePiece(cells, colorHex, scale){
+    const inner = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({
+      color: colorHex, emissive: colorHex, emissiveIntensity: 0.6,
+      metalness: 0.5, roughness: 0.32, transparent: true, opacity: 0.16,
+      depthWrite: false
+    });
+    const lineMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.42 });
+
+    cells.forEach(function(c){
+      const cube = new THREE.Mesh(cubeGeo, mat);
+      cube.position.set(c[0]*UNIT, c[1]*UNIT, 0);
+      inner.add(cube);
+      const line = new THREE.LineSegments(edgeGeo, lineMat);
+      line.position.copy(cube.position);
+      inner.add(line);
+    });
+
+    // 让形状以自身几何中心为原点
+    const xs = cells.map(function(c){ return c[0]; });
+    const ys = cells.map(function(c){ return c[1]; });
+    inner.position.x = -(Math.min.apply(null,xs) + Math.max.apply(null,xs)) / 2 * UNIT;
+    inner.position.y = -(Math.min.apply(null,ys) + Math.max.apply(null,ys)) / 2 * UNIT;
+
+    const wrap = new THREE.Group();
+    wrap.add(inner);
+    wrap.scale.setScalar(scale || 1);
+    wrap.userData.mat = mat;
+    wrap.userData.lineMat = lineMat;
+    return wrap;
+  }
+
+  const field = new THREE.Group();
+  field.position.z = -3.6;
+  group.add(field);
+
+  const FIELD_TOP = 4.8, FIELD_BOTTOM = -4.8, FIELD_HALF_W = 3.4;
+
+  function resetFaller(p, initial){
+    p.position.x = (Math.random() - 0.5) * FIELD_HALF_W * 2;
+    p.position.y = initial
+      ? FIELD_BOTTOM + Math.random() * (FIELD_TOP - FIELD_BOTTOM)
+      : FIELD_TOP + Math.random() * 3.2;
+    p.position.z = (Math.random() - 0.5) * 2.4;
+    p.rotation.set(Math.random()*6.28, Math.random()*6.28, Math.random()*6.28);
+    p.userData.speed = 0.42 + Math.random() * 0.75;
+    p.userData.rotSpeed = (Math.random() - 0.5) * 0.5;
+    const op = 0.11 + Math.random() * 0.15;
+    p.userData.mat.opacity = op;
+    p.userData.lineMat.opacity = op + 0.24;
+  }
+
+  const fallers = [];
+  const FALL_KEYS = ['T','J','L','S','Z','I','O','T','S','L'];
+  FALL_KEYS.forEach(function(k, i){
+    const piece = makePiece(SHAPES[k], PALETTE[i % 4], 0.6 + Math.random()*0.32);
+    resetFaller(piece, true);
+    field.add(piece);
+    fallers.push(piece);
+  });
+
+  // 环绕光环
+  const rings = [];
+  [2.48, 3.05].forEach(function(r, i){
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(r, 0.0045, 6, 140),
+      new THREE.MeshBasicMaterial({
+        color: i ? C_ACCENT : C_PRIMARY,
+        transparent:true, opacity: i ? 0.25 : 0.35
+      })
+    );
+    ring.rotation.x = Math.PI/2 + (i ? 0.4 : 0);
+    ring.rotation.z = i * 0.5;
+    group.add(ring);
+    rings.push(ring);
+  });
+
+  // 粒子星云
+  const COUNT = 1500;
+  const pos = new Float32Array(COUNT*3);
+  const col = new Float32Array(COUNT*3);
+  const c1 = new THREE.Color(C_PRIMARY);
+  const c2 = new THREE.Color(C_ACCENT);
+  const c3 = new THREE.Color(C_PURPLE);
+  for(let i=0;i<COUNT;i++){
+    const r = 3.2 + Math.random()*4.2;
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos(2*Math.random()-1);
+    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
+    pos[i*3+1] = r*Math.sin(phi)*Math.sin(theta)*0.62;
+    pos[i*3+2] = r*Math.cos(phi);
+    const rnd = Math.random();
+    const c = rnd < 0.62 ? c1 : (rnd < 0.85 ? c3 : c2);
+    col[i*3] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  pGeo.setAttribute('color', new THREE.BufferAttribute(col,3));
+  const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    size: 0.032, vertexColors: true, transparent: true, opacity: 0.9,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  group.add(points);
+
+  // 交互
+  let dragging = false, px = 0, py = 0;
+  let targetRotY = -0.3, targetRotX = 0.1;
+  let curRotY = -0.3, curRotX = 0.1;
+  let mx = 0, my = 0;
+
+  canvas.addEventListener('pointerdown', function(e){
+    dragging = true; px = e.clientX; py = e.clientY;
+    if(canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointerup', function(){ dragging = false; });
+  canvas.addEventListener('pointercancel', function(){ dragging = false; });
+  canvas.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    targetRotY += (e.clientX - px) * 0.008;
+    targetRotX += (e.clientY - py) * 0.006;
+    targetRotX = Math.max(-0.85, Math.min(0.85, targetRotX));
+    px = e.clientX; py = e.clientY;
+  });
+  window.addEventListener('pointermove', function(e){
+    if(dragging) return;
+    mx = (e.clientX / window.innerWidth - 0.5);
+    my = (e.clientY / window.innerHeight - 0.5);
+  });
+
+  function resize(){
+    const w = canvas.clientWidth || 1;
+    const h = canvas.clientHeight || 1;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    // 窄屏时后退，保证手柄完整可见
+    camera.position.z = camera.aspect < 1 ? 8 * (1 / camera.aspect) : 8;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  if(window.ResizeObserver){ new ResizeObserver(resize).observe(canvas); }
+
+  const clock = new THREE.Clock();
+  let spin = 0;
+  let tAcc = 0;
+
+  let lastW = 0, lastH = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    if(canvas.clientWidth !== lastW || canvas.clientHeight !== lastH){
+      lastW = canvas.clientWidth; lastH = canvas.clientHeight;
+      resize();
+    }
+    const dt = Math.min(clock.getDelta(), 0.06);
+    tAcc += dt;
+    const t = tAcc;
+
+    spin += dt * 0.11;
+    const parX = dragging ? 0 : mx * 0.28;
+    const parY = dragging ? 0 : my * 0.16;
+
+    curRotY += (targetRotY + spin + parX - curRotY) * 0.075;
+    curRotX += (targetRotX + parY - curRotX) * 0.075;
+
+    // 手柄：跟随拖动 + 轻微悬浮摇摆
+    pad.rotation.y = curRotY;
+    pad.rotation.x = curRotX + Math.sin(t * 0.62) * 0.035;
+    pad.rotation.z = Math.sin(t * 0.45) * 0.028;
+    pad.position.y = Math.sin(t * 0.85) * 0.10;
+
+    // 霓虹描边 / 按钮呼吸
+    const pulse = 0.5 + Math.sin(t * 1.7) * 0.5;
+    padGlow.forEach(function(g){
+      if(g.kind === 'emi') g.mat.emissiveIntensity = g.base + pulse * g.amp;
+      else g.mat.opacity = g.base * (0.55 + pulse * 0.6);
+    });
+
+    // 背景方块持续下落
+    fallers.forEach(function(p){
+      p.position.y -= p.userData.speed * dt;
+      p.rotation.x += p.userData.rotSpeed * dt;
+      p.rotation.z += p.userData.rotSpeed * dt * 0.6;
+      if(p.position.y < FIELD_BOTTOM) resetFaller(p, false);
+    });
+
+    rings[0].rotation.z = t * 0.18;
+    rings[1].rotation.z = -t * 0.12;
+
+    points.rotation.y = t * 0.028;
+    points.rotation.x = Math.sin(t * 0.18) * 0.05;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
 </script>
 </body>
 </html>
